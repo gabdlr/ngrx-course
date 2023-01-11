@@ -1,46 +1,48 @@
-import {BrowserModule} from '@angular/platform-browser';
-import {NgModule} from '@angular/core';
+import { BrowserModule } from "@angular/platform-browser";
+import { NgModule, isDevMode } from "@angular/core";
 
-import {AppComponent} from './app.component';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {MatMenuModule} from '@angular/material/menu';
-import {MatIconModule} from '@angular/material/icon';
+import { AppComponent } from "./app.component";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { MatMenuModule } from "@angular/material/menu";
+import { MatIconModule } from "@angular/material/icon";
 
-import {MatListModule} from '@angular/material/list';
-import {MatSidenavModule} from '@angular/material/sidenav';
-import {MatToolbarModule} from '@angular/material/toolbar';
-import {HttpClientModule} from '@angular/common/http';
+import { MatListModule } from "@angular/material/list";
+import { MatSidenavModule } from "@angular/material/sidenav";
+import { MatToolbarModule } from "@angular/material/toolbar";
+import { HttpClientModule } from "@angular/common/http";
 
-import {RouterModule, Routes} from '@angular/router';
-import {AuthModule} from './auth/auth.module';
-import {StoreModule} from '@ngrx/store';
-import {StoreDevtoolsModule} from '@ngrx/store-devtools';
-import {environment} from '../environments/environment';
-import {RouterState, StoreRouterConnectingModule} from '@ngrx/router-store';
+import { RouterModule, Routes } from "@angular/router";
+import { AuthModule } from "./auth/auth.module";
+import { StoreModule } from "@ngrx/store";
+import { StoreDevtoolsModule } from "@ngrx/store-devtools";
+import { environment } from "../environments/environment";
+import { RouterState, StoreRouterConnectingModule } from "@ngrx/router-store";
 
-import {EffectsModule} from '@ngrx/effects';
-import {EntityDataModule} from '@ngrx/data';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { EffectsModule } from "@ngrx/effects";
+import { EntityDataModule } from "@ngrx/data";
 
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { reducers, metaReducers } from "./reducers";
+import { LoginComponent } from "./auth/login/login.component";
+import { FormBuilder } from "@angular/forms";
+import { AuthService } from "./auth/auth.service";
 
 const routes: Routes = [
   {
-    path: 'courses',
-    loadChildren: () => import('./courses/courses.module').then(m => m.CoursesModule)
+    path: "courses",
+    loadChildren: () =>
+      import("./courses/courses.module").then((m) => m.CoursesModule),
   },
   {
-    path: '**',
-    redirectTo: '/'
-  }
+    path: "**",
+    redirectTo: "/",
+  },
 ];
 
-
-
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
+  declarations: [AppComponent],
   imports: [
+    AuthModule,
     BrowserModule,
     BrowserAnimationsModule,
     RouterModule.forRoot(routes),
@@ -51,9 +53,10 @@ const routes: Routes = [
     MatProgressSpinnerModule,
     MatListModule,
     MatToolbarModule,
-    AuthModule.forRoot()
+    StoreModule.forRoot(reducers, { metaReducers }),
+    !environment.production ? StoreDevtoolsModule.instrument() : [],
+    StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() }),
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule {
-}
+export class AppModule {}
