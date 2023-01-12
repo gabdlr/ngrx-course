@@ -39,7 +39,6 @@ export class LoginComponent implements OnInit {
       .login(userData.email, userData.password)
       .pipe(
         tap((user) => {
-          console.log(user);
           this.store.dispatch(login({ user }));
           this.router.navigateByUrl("/courses");
         })
