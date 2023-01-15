@@ -17,13 +17,15 @@ export const reducers: ActionReducerMap<AppState> = {
   router: routerReducer,
 };
 
-export function logger(reducer: ActionReducer<any>): ActionReducer<any> {
-  return (state, action) => {
-    console.log("prev. state:", state);
-    console.log("current action:", state);
-    return reducer(state, action);
-  };
-}
+// export function logger(reducer: ActionReducer<any>): ActionReducer<any> {
+//   return (state, action) => {
+//     console.log("prev. state:", state);
+//     console.log("current action:", state);
+//     return reducer(state, action);
+//   };
+// }
 export const metaReducers: MetaReducer<AppState>[] = !environment.production
-  ? [logger]
+  ? [
+      //logger
+    ]
   : [];

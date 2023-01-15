@@ -22,6 +22,7 @@ import { AuthGuard } from "./auth.guard";
 import { EffectsModule } from "@ngrx/effects";
 import { StoreRouterConnectingModule } from "@ngrx/router-store";
 import { RouterState } from "@ngrx/router-store/src";
+import * as fromCourses from "./courses/reducers/";
 
 const routes: Routes = [
   {
@@ -59,6 +60,10 @@ const routes: Routes = [
         strictStateSerializability: true,
       },
     }),
+    StoreModule.forFeature(
+      fromCourses.coursesFeatureKey,
+      fromCourses.coursesReducer
+    ),
     !environment.production ? StoreDevtoolsModule.instrument() : [],
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() }),
     EffectsModule.forRoot([]),
