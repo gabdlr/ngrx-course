@@ -23,6 +23,7 @@ import { EffectsModule } from "@ngrx/effects";
 import { StoreRouterConnectingModule } from "@ngrx/router-store";
 import { RouterState } from "@ngrx/router-store/src";
 import * as fromCourses from "./courses/reducers/";
+import { EntityDataModule } from "@ngrx/data";
 
 const routes: Routes = [
   {
@@ -71,6 +72,8 @@ const routes: Routes = [
       stateKey: "router",
       routerState: RouterState.Minimal,
     }),
+    //NgRx Data
+    EntityDataModule.forRoot({}),
   ],
   bootstrap: [AppComponent],
 })

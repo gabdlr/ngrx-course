@@ -32,19 +32,37 @@ import { compareLessons, Lesson } from "./model/lesson";
 import { CoursesResolver } from "./courses.resolver";
 import { EffectsModule } from "@ngrx/effects";
 import { CoursesEffects } from "./courses.effects";
+import { CourseEntityService } from "./services/course-entity.service";
+import { CoursesDResolver } from "./courses-d.resolver";
+import { CoursesDataService } from "./services/courses-data.service";
+import { LessonsDataService } from "./services/lessons-data.service";
 
 export const coursesRoutes: Routes = [
   {
     path: "",
     component: HomeComponent,
-    resolve: { courses: CoursesResolver },
+    //NgRx Entities with adapter
+    //resolve: { courses: CoursesResolver },
+    //NgRx Data
+    resolve: { courses: CoursesDResolver },
   },
   {
     path: ":courseUrl",
     component: CourseComponent,
   },
 ];
-
+//NgRx Data
+const entityMetaData: EntityMetadataMap = {
+  Course: {
+    sortComparer: compareCourses,
+    entityDispatcherOptions: {
+      optimisticUpdate: true,
+    },
+  },
+  Lesson: {
+    sortComparer: compareLessons,
+  },
+};
 @NgModule({
   imports: [
     CommonModule,
@@ -82,5 +100,16 @@ export const coursesRoutes: Routes = [
   providers: [CoursesHttpService],
 })
 export class CoursesModule {
-  constructor() {}
+  //NgRx Data
+  //This service has to be injected because of the lazyloading nature of this module
+  constructor(
+    private entityDefinitioService: EntityDefinitionService,
+    private entityDataService: EntityDataService,
+    private coursesDataService: CoursesDataService,
+    private lessonsDataService: LessonsDataService
+  ) {
+    this.entityDefinitioService.registerMetadataMap(entityMetaData);
+    this.entityDataService.registerService("Course", coursesDataService);
+    this.entityDataService.registerService("Lesson", lessonsDataService);
+  }
 }

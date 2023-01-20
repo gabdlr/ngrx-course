@@ -7,6 +7,7 @@ import { CoursesHttpService } from "../services/courses-http.service";
 import { Store } from "@ngrx/store";
 import { Update } from "@ngrx/entity";
 import { courseUpdated } from "../course.actions";
+import { CourseEntityService } from "../services/course-entity.service";
 
 @Component({
   selector: "course-dialog",
@@ -28,7 +29,8 @@ export class EditCourseDialogComponent {
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<EditCourseDialogComponent>,
     @Inject(MAT_DIALOG_DATA) data,
-    private store: Store
+    //NgRx Data
+    private coursesEntityService: CourseEntityService // prettier ignore //NgRx Entities with adapter //private store: Store
   ) {
     this.dialogTitle = data.dialogTitle;
     this.course = data.course;
@@ -63,12 +65,20 @@ export class EditCourseDialogComponent {
       ...this.form.value,
     };
 
-    const update: Update<Course> = {
-      id: course.id,
-      changes: course,
-    };
+    //NgRx Entities with adapter
+    // const update: Update<Course> = {
+    //   id: course.id,
+    //   changes: course,
+    // };
 
-    this.store.dispatch(courseUpdated({ update }));
-    this.dialogRef.close();
+    //this.store.dispatch(courseUpdated({ update }));
+
+    //NgRx Data
+    if (this.mode === "update") {
+      this.coursesEntityService.update(course);
+      this.dialogRef.close();
+    } else if (this.mode === "create") {
+      this.coursesEntityService.add(course).subscribe();
+    }
   }
 }
